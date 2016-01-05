@@ -28,7 +28,13 @@ sigma = zeros(1, size(X, 2));
 
 mu = mean(X);
 sigma = std(X);
-X_norm = (X .- mu) ./ sigma;
+
+o = ones(length(X), 1);
+
+omu = o * mu;
+osigma = o * sigma;
+
+X_norm = (X .- omu) ./ osigma;
 
 
 % ============================================================
