@@ -33,5 +33,4 @@ for iter = 1:num_iters
 
 end
 
-    disp(min(J_history))
 end
