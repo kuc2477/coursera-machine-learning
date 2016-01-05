@@ -15,7 +15,7 @@ J = 0;
 h = X * theta;
 e = h - y;
 
-J = (1 / 2 * m) * sum(e .^ 2)
+J = sum((1 / 2 * m) * e .^ 2);
 
 
 
