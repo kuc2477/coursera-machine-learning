@@ -21,7 +21,7 @@ e = h - y;
 r = [0; theta(2:end)];
 
 
-J = sum(-y .* log(h) - (1-y) .* log(1-h)) + lambda/(2*m) * r * r';
+J = sum(-y .* log(h) - (1-y) .* log(1-h)) + lambda/(2*m) * r' * r;
 grad = (1/m) * (e' * X)' + (lambda/m) * r;
 
 % =============================================================
