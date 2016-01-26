@@ -70,13 +70,14 @@ Theta2_grad = zeros(size(Theta2));
 a1 = [ones(m, 1) X]';
 
 z2 = Theta1 * a1;
-a2 = [ones(1, size(z2, 2)); sigmoid(z2)];
+z2 = [ones(1, size(z2, 2)); z2];
+a2 = sigmoid(z2);
 
 z3 = Theta2 * a2;
 a3 = [sigmoid(z3)];
 
-y = eye(num_labels)(y, :)';
 h = a3;
+y = eye(num_labels)(y, :)';
 
 positive_cost = -y .* log(h);
 negative_cost = -(1 -y) .* log(1 - h);
@@ -89,6 +90,17 @@ J = (1/m) * sum(cost_mat(:)) + reg;
 % ===============
 % Backpropagation
 % ===============
+
+e3 = -(y - a3);
+e2 = ((Theta2' * e3) .* sigmoidGradient(z2))(2:end, :);
+
+for i = 1:m
+   Theta2_grad += e3(:, i) * a2(:, i)';
+   Theta1_grad += e2(:, i) * a1(:, i)';
+endfor
+
+Theta1_grad /= m;
+Theta2_grad /= m;
 
 % -------------------------------------------------------------
 
