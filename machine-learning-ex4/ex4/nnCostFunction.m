@@ -70,8 +70,8 @@ Theta2_grad = zeros(size(Theta2));
 a1 = [ones(m, 1) X]';
 
 z2 = Theta1 * a1;
-z2 = [ones(1, size(z2, 2)); z2];
-a2 = sigmoid(z2);
+z2_added = [ones(1, size(z2, 2)); z2];
+a2 = [ones(1, size(z2, 2)); sigmoid(z2)];
 
 z3 = Theta2 * a2;
 a3 = [sigmoid(z3)];
@@ -82,7 +82,11 @@ y = eye(num_labels)(y, :)';
 positive_cost = -y .* log(h);
 negative_cost = -(1 -y) .* log(1 - h);
 cost_mat = positive_cost + negative_cost;
-reg = (lambda/(2*m)) * (sum(Theta1(:).^2) + sum(Theta2(:).^2));
+
+Theta1_without_bias_weight = Theta1(:, 2:end);
+Theta2_without_bias_weight = Theta2(:, 2:end);
+
+reg = (lambda/(2*m)) * (sum(Theta1_without_bias_weight(:).^2) + sum(Theta2_without_bias_weight(:).^2));
 
 J = (1/m) * sum(cost_mat(:)) + reg;
 
@@ -92,11 +96,17 @@ J = (1/m) * sum(cost_mat(:)) + reg;
 % ===============
 
 e3 = -(y - a3);
-e2 = ((Theta2' * e3) .* sigmoidGradient(z2))(2:end, :);
+e2 = ((Theta2' * e3) .* sigmoidGradient(z2_added))(2:end, :);
+
+Theta1_bias_weight_replaced = [zeros(size(Theta1, 1), 1) Theta1(:, 2:end)];
+Theta2_bias_weight_replaced = [zeros(size(Theta2, 1), 1) Theta2(:, 2:end)];
+
+Theta1_grad += lambda * Theta1_bias_weight_replaced;
+Theta2_grad += lambda * Theta2_bias_weight_replaced;
 
 for i = 1:m
-   Theta2_grad += e3(:, i) * a2(:, i)';
-   Theta1_grad += e2(:, i) * a1(:, i)';
+    Theta2_grad += e3(:, i) * a2(:, i)';
+    Theta1_grad += e2(:, i) * a1(:, i)';
 endfor
 
 Theta1_grad /= m;
