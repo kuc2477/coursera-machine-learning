@@ -16,11 +16,12 @@ sim = 0;
 %
 %
 
+dvec = (x1-x2);
+dvec_norm_square = dvec' * dvec;
 
-
-
+sim = exp(-dvec_norm_square / (2*sigma^2));
 
 
 % =============================================================
-    
+
 end
